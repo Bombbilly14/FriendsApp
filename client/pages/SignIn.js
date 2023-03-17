@@ -15,13 +15,19 @@ const SignIn = ({ navigation }) => {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("http://172.29.2.241:8000/api/signin", { email, password });
+        const resp = await axios.post("http://172.29.166.48:8000/api/signin", { email, password });
         if (resp.data.error) {
             alert('All fields are required');
         } else {
             await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data))
             alert("Sign in successful")
-            navigation.navigate("Home")
+            setState({
+                ...state,
+                token: resp.data.token,
+                user: resp.data.user,
+              });
+              
+            // navigation.navigate('Home')
 
         }
     };
