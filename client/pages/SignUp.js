@@ -12,12 +12,14 @@ const SignUp = ({ navigation }) => {
   const [password, setPassword] = useState("")
   const [state, setState] = useContext(AuthContext)
 
+
+
   const handleSubmit = async () => {
     if (name === '' || email === '' || password === '') {
       alert("All fields are required")
       return;
     }
-    const resp = await axios.post('http://172.29.2.241:8000/api/signup', { name, email, password })
+    const resp = await axios.post('http://172.29.166.48:8000/api/signup', { name, email, password })
     if (resp.data.error) {
       alert(resp.data.error)
     } else {

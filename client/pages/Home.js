@@ -1,11 +1,13 @@
 import { Text, SafeAreaView, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
+import FooterList from '../components/footer/FooterList'
 
 
 const Home = () => {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.mainText}>Home yoyo</Text>
+            <FooterList />
         </SafeAreaView>
     )
 }
