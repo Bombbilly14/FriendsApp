@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from 'axios';
 
 const SignIn = ({navigation}) => {
-    const [name, setName] = useState("");
+   
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const handleSubmit = async () => {
-        if (name === '' || email === '' || password === '') {
+        if ( email === '' || password === '') {
             alert("All fields are required");
             return;
         }
-        await axios.post("http://localhost:8001/api/signin", { name, email, password });
+        await axios.post("http://172.29.2.241:8000/api/signin", { email, password });
         alert("Sign In Successful");
     };
     return (
