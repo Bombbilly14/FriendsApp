@@ -1,19 +1,29 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/auth'
 
-const SignIn = ({navigation}) => {
-   
+const SignIn = ({ navigation }) => {
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [state, setState] = useContext(AuthContext)
     const handleSubmit = async () => {
-        if ( email === '' || password === '') {
+        if (email === '' || password === '') {
             alert("All fields are required");
             return;
         }
-        await axios.post("http://172.29.2.241:8000/api/signin", { email, password });
-        alert("Sign In Successful");
+        const resp = await axios.post("http://172.29.2.241:8000/api/signin", { email, password });
+        if (resp.data.error) {
+            alert('All fields are required');
+        } else {
+            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data))
+            alert("Sign in successful")
+            navigation.navigate("Home")
+
+        }
     };
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
