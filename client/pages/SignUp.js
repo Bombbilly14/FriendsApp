@@ -16,7 +16,8 @@ const SignUp = ({navigation}) => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8001/api/signup', {name, email, password})
+      const response = await axios.post('http://172.29.2.241:8000/api/signup', {name, email, password})
+      console.log(response)
       Alert.alert("Success", "User created successfully")
       setName('')
       setEmail('')
@@ -27,7 +28,7 @@ const SignUp = ({navigation}) => {
   }
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+      <KeyboardAwareScrollView >
       <View styles={styles.container}>
         <Text style={styles.signupText}>SignUp</Text>
         <View style={{ marginHorizontal: 24 }}>
@@ -42,7 +43,7 @@ const SignUp = ({navigation}) => {
             <Text style={{ fontSize: 16, color: 'blue' }}>PASSWORD</Text>
             <TextInput style={styles.signupInput} value={password} onChangeText={text => setPassword(text)} secureTextEntry={true} />
         </View>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
         <Text style={{ fontSize: 12, textAlign: 'center' }}>
