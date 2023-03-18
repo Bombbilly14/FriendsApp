@@ -5,6 +5,9 @@ import SignIn from '../../pages/SignIn';
 import Home from '../../pages/Home'
 import { AuthContext } from '../../context/auth';
 import HeaderTabs from './HeaderTabs'
+import Account from '../../pages/Account'
+import Post from '../../pages/Post'
+import Links from '../../pages/Links'
 
 const Stack = createNativeStackNavigator();
 
@@ -15,10 +18,17 @@ const NavigationScreen = () => {
     return (
         <Stack.Navigator initialRouteName='SignIn'>
             {authenticated ?
-                <Stack.Screen name='Home' component={Home} options={{ headerRight: () => <HeaderTabs /> }} /> : (
+                <>
+                    <Stack.Screen name='Home' component={Home} options={{ headerRight: () => <HeaderTabs /> }} />
+                    <Stack.Screen name='Account' component={Account} />
+                    <Stack.Screen name='Post' component={Post} />
+                    <Stack.Screen name='Links' component={Links} />
+                </>
+                : (
                     <>
                         <Stack.Screen name='SignUp' component={SignUp} />
                         <Stack.Screen name='SignIn' component={SignIn} />
+
                     </>
                 )
             }

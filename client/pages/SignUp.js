@@ -24,11 +24,13 @@ const SignUp = ({ navigation }) => {
       alert(resp.data.error)
     } else {
       console.log(resp.data)
-      setState(resp.data)
+      setState({
+        ...state,
+        token: resp.data.token,
+        user: resp.data.user,
+      });
       await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data))
       alert("Sign up successful")
-      navigation.navigate("Home")
-
     }
   }
 
