@@ -2,11 +2,22 @@ import User from "../models/user.js";
 import { hashPassword, comparePassword } from "../helpers/auth.js";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
+import cloudinary from 'cloudinary'
+import dotenv from 'dotenv';
+dotenv.config()
+
+
+
+
+//cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
 
 // sendgrid
-import dotenv from 'dotenv';
-dotenv.config()
 
 import sgMail from "@sendgrid/mail";
 
@@ -167,3 +178,34 @@ export const resetPassword = async (req, res) => {
         console.log(err);
     }
 };
+
+export const uploadImage = async (req, res) => {
+    console.log(process.env.CLOUDINARY_API_SECRET)
+    console.log(process.env.CLOUDINARY_API_KEY)
+    console.log(process.env.CLOUDINARY_CLOUD_NAME)
+    try {
+        const result = await cloudinary.uploader.upload(req.body.image, {
+            public_id: nanoid(),
+            resource_type: 'jpg',
+        } )
+        console.log(req.body.user);
+        const user = await User.findByIdAndUpdate(
+            req.body.user._id,
+            {
+                image: {
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                },
+            },
+            { new: true }
+        )
+        return res.json({
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            image: user.image
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}

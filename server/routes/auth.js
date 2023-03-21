@@ -4,7 +4,7 @@ const router = express.Router();
 
 //controllers
 
-import { signup, signin, forgotPassword, resetPassword, getAllUsers } from '../controllers/auth.js';
+import { signup, signin, forgotPassword, resetPassword, getAllUsers, uploadImage } from '../controllers/auth.js';
 
 
 router.get("/", (req, res) => {
@@ -18,5 +18,6 @@ router.post("/signin", signin)
 router.post("/forgot-password", forgotPassword)
 router.post("/reset-password", resetPassword)
 router.get("/users", getAllUsers);
+router.post("/upload-image", uploadImage)
 
 export default router
