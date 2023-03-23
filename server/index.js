@@ -1,15 +1,49 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-
+import http from 'http';
+import { Server } from 'socket.io';
 import express from "express"
 import cors from "cors"
 import mongoose from "mongoose"
 import morgan from "morgan"
-
 import authRoutes from "./routes/auth.js"
+import { saveMessage, getPrivateMessage } from './controllers/message.js';
 
-const app = express()
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+
+  socket.on('join chat', ({ userId }) => {
+    console.log(`User ${userId} joined the chat`);
+    socket.join(userId);
+  });
+
+  socket.on('previous messages', async ({ userId1, userId2 }) => {
+    try {
+      const messages = await getPrivateMessage(userId1, userId2);
+      socket.emit('previous messages', messages);
+    } catch (err) {
+      console.error(err);
+    }
+  })
+
+
+  socket.on('send message', async ({ senderId, receiverId, message }) => {
+
+    const newMessage = await saveMessage(senderId, receiverId, message);
+    io.to(receiverId).emit('new message', newMessage);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
 
 mongoose
   .connect(process.env.DATABASE)
@@ -25,17 +59,4 @@ app.use(morgan("dev"))
 //route middlewares
 app.use("/api", authRoutes)
 
-app.listen(8000, () => console.log("Server running on port 8000"))
-
-
-
-
-// const express = require("express");
-// This works but :(
-// const app = express();
-
-// app.get("/api", (req, res) => {
-//     res.json({"users": ["userOne", "userTwo", "userThree"]});
-// })
-
-// app.listen(5000, () => { console.log("server listening on port 5000 ")})
+server.listen(8000, () => console.log("Server running on port 8000"))

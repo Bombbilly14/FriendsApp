@@ -9,6 +9,8 @@ import Account from '../../pages/Account'
 import Post from '../../pages/Post'
 import Links from '../../pages/Links'
 import ForgotPassword from '../../pages/ForgotPassword'
+import Chat from '../../pages/Chat'
+import UserList from '../../pages/UserList'
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,8 @@ const NavigationScreen = () => {
                     <Stack.Screen name='Account' component={Account}  options={{ headerRight: () => <HeaderTabs /> }}/>
                     <Stack.Screen name='Post' component={Post} />
                     <Stack.Screen name='Links' component={Links} />
+                    <Stack.Screen name="UserList" component={UserList} />
+                    <Stack.Screen name="Chat" component={Chat} />
                 </>
                 : (
                     <>
