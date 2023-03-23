@@ -20,8 +20,8 @@ const NavigationScreen = () => {
         <Stack.Navigator initialRouteName='SignIn'>
             {authenticated ?
                 <>
-                    <Stack.Screen name='Home' component={Home} options={{ headerRight: () => <HeaderTabs /> }} />
-                    <Stack.Screen name='Account' component={Account} />
+                    <Stack.Screen name='Home' component={Home} />
+                    <Stack.Screen name='Account' component={Account}  options={{ headerRight: () => <HeaderTabs /> }}/>
                     <Stack.Screen name='Post' component={Post} />
                     <Stack.Screen name='Links' component={Links} />
                 </>

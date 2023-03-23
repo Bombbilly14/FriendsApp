@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Message from './message.js';
+
 const { Schema } = mongoose;
 
 
@@ -33,7 +35,19 @@ const userSchema = new Schema(
             type: String,
             default: "",
         },
-    },
-    { timestamps: true }
-);
+        sentMessages: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: 'Message',
+          },
+        ],
+        receivedMessages: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: 'Message',
+          },
+        ],
+      },
+      { timestamps: true }
+    );
 export default mongoose.model("User", userSchema);
