@@ -15,7 +15,7 @@ const SignIn = ({ navigation }) => {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("http://172.19.115.28:8000/api/signin", { email, password });
+        const resp = await axios.post("http://192.168.57.246:8000/api/signin", { email, password });
         if (resp.data.error) {
             alert('Name and password do not match');
         } else {
