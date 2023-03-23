@@ -89,7 +89,6 @@ export const signup = async (req, res) => {
 };
 
 export const signin = async (req, res) => {
-    // console.log(req.body);
     try {
         const { email, password } = req.body;
         // check if our db has user with that email
@@ -98,29 +97,31 @@ export const signin = async (req, res) => {
             return res.json({
                 error: "No user found",
             });
-        }
-        // check password
-        const match = await comparePassword(password, user.password);
-        if (!match) {
-            return res.json({
-                error: "Wrong password",
+        } else {
+            // check password
+            const match = await comparePassword(password, user.password);
+            if (!match) {
+                return res.json({
+                    error: "Invalid Credentials",
+                });
+            }
+            // create signed token
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+                expiresIn: "7d",
+            });
+            user.password = undefined;
+            user.secret = undefined;
+            res.json({
+                token,
+                user,
             });
         }
-        // create signed token
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "7d",
-        });
-        user.password = undefined;
-        user.secret = undefined;
-        res.json({
-            token,
-            user,
-        });
     } catch (err) {
         console.log(err);
         return res.status(400).send("Error. Try again.");
     }
 };
+
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -180,9 +181,7 @@ export const resetPassword = async (req, res) => {
 };
 
 export const uploadImage = async (req, res) => {
-    console.log(process.env.CLOUDINARY_API_SECRET)
-    console.log(process.env.CLOUDINARY_API_KEY)
-    console.log(process.env.CLOUDINARY_CLOUD_NAME)
+
     try {
         const result = await cloudinary.uploader.upload(req.body.image, {
             public_id: nanoid(),
@@ -209,3 +208,35 @@ export const uploadImage = async (req, res) => {
         console.log(err)
     }
 }
+
+export const updatePassword = async (req, res) => {
+    try {
+      const { password, newPassword } = req.body;
+  
+      if (newPassword && newPassword.length < 6) {
+        return res.json({ error: "New password must be at least 6 characters" });
+      }
+  
+      const user = await User.findById(req.body.user.user._id);
+      const isMatch = await comparePassword(password, user.password);
+  
+      if (!isMatch) {
+        return res.json({ error: "Invalid current password" });
+      }
+  
+      const hashedPassword = await hashPassword(newPassword);
+      const updatedUser = await User.findByIdAndUpdate(
+        req.body.user.user._id,
+        { password: hashedPassword },
+        { new: true } // gets updated document ? 
+      );
+      updatedUser.password = undefined;
+      updatedUser.secret = undefined;
+  
+      return res.json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.json({ error: "Something went wrong" });
+    }
+  };
+  

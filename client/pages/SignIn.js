@@ -15,9 +15,9 @@ const SignIn = ({ navigation }) => {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("http://172.19.126.208:8000/api/signin", { email, password });
+        const resp = await axios.post("http://172.19.115.28:8000/api/signin", { email, password });
         if (resp.data.error) {
-            alert('All fields are required');
+            alert('Name and password do not match');
         } else {
             await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data))
             alert("Sign in successful")
@@ -52,7 +52,7 @@ const SignIn = ({ navigation }) => {
                         Sign Up!
                     </Text>
                 </Text>
-                <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>Forgot Password?</Text>
+                <Text  onPress={()=> navigation.navigate('forgot-password')} style={{ fontSize: 12, textAlign: 'center', marginTop: 10, color: 'purple', fontWeight: 'bold' }}>Forgot Password?</Text>
             </View>
         </KeyboardAwareScrollView>
     )
