@@ -4,7 +4,7 @@ const router = express.Router();
 
 //controllers
 
-import { signup, signin, forgotPassword, resetPassword, getAllUsers, uploadImage, updatePassword } from '../controllers/auth.js';
+import { signup, signin, forgotPassword, resetPassword, getAllUsers, uploadImage, updatePassword, getUserById  } from '../controllers/auth.js';
 import { sendPrivateMessage, getPrivateMessage } from '../controllers/message.js'
 
 
@@ -23,5 +23,6 @@ router.post("/upload-image", uploadImage)
 router.post("/update-password",updatePassword)
 router.post('/messages', sendPrivateMessage)
 router.get('/messages/:userId1/:userId2', getPrivateMessage)
+router.get('/:userId', getUserById);
 
 export default router

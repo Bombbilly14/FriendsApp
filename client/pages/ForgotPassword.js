@@ -15,7 +15,7 @@ const ForgotPassword = ({navigation}) => {
             return
         }
         try {
-            const { data} = await axios.post("http://192.168.57.246:8000/api/forgot-password", {email})
+            const { data} = await axios.post("http://172.30.18.69:8000/api/forgot-password", {email})
             if(data.error) alert(data.error)
             else {
                 setVisible(true)
@@ -29,7 +29,7 @@ const ForgotPassword = ({navigation}) => {
 
     const handlePasswordReset = async () => {
         try {
-            const { data  } = await axios.post('http://192.168.57.246:8000/api/reset-password', { email, resetCode, password})
+            const { data  } = await axios.post('http://172.30.18.69:8000/api/reset-password', { email, resetCode, password})
             if (data.error) alert(data.error)
             else {
                 alert('Password reset successful')
