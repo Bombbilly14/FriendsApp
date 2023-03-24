@@ -19,7 +19,7 @@ const SignUp = ({ navigation }) => {
       alert("All fields are required")
       return;
     }
-    const resp = await axios.post('http://192.168.57.246:8000/api/signup', { name, email, password })
+    const resp = await axios.post('http://172.30.18.69:8000/api/signup', { name, email, password })
     if (resp.data.error) {
       alert(resp.data.error)
     } else {

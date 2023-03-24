@@ -37,7 +37,7 @@ const Account = () => {
       let storedData = await AsyncStorage.getItem("auth-rn")
       const user = JSON.parse(storedData)
       console.log(user)
-      const response = await axios.post("http://192.168.57.246:8000/api/update-password", { password, newPassword, user })
+      const response = await axios.post("http://172.30.18.69:8000/api/update-password", { password, newPassword, user })
       const data = response.data
       if (data.error) {
         setErrorMessage(data.error);
@@ -54,16 +54,6 @@ const Account = () => {
       console.log(err)
     }
   }
-
-  // const handleModalSubmit = () => {
-  //   if (!password) {
-  //     setErrorMessage("Please enter your current password.");
-  //   } else if (newPassword !== confirmNewPassword) {
-  //     setErrorMessage("New passwords do not match.");
-  //   } else {
-  //     handleSubmit();
-  //   }
-  // }
 
   const handleOpenModal = () => {
     setIsModalVisible(true);

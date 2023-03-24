@@ -9,38 +9,14 @@ const UserList = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [sortedUsers, setSortedUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [authState, _] = useContext(AuthContext);
-
-  
-
-  useEffect(() => {
-    const usersWithLatestMessages = users.map((user) => {
-      const latestMessage = findLatestMessage(user._id);
-      return { ...user, latestMessage };
-    });
-  
-    const sorted = usersWithLatestMessages.sort((a, b) => {
-      if (!a.latestMessage && !b.latestMessage) {
-        return 0;
-      }
-      if (!a.latestMessage) {
-        return 1;
-      }
-      if (!b.latestMessage) {
-        return -1;
-      }
-      return new Date(b.latestMessage.timestamp) - new Date(a.latestMessage.timestamp);
-    });
-  
-    setSortedUsers(sorted);
-  }, [users, messages]);
-  
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://192.168.57.246:8000/api/users');
+        const response = await axios.get('http://172.30.18.69:8000/api/users');
         setUsers(response.data);
       } catch (error) {
         console.log(error);
@@ -53,11 +29,11 @@ const UserList = ({ navigation }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       const fetchedMessages = [];
-  
+
       try {
         for (const user of users) {
           const response = await axios.get(
-            `http://192.168.57.246:8000/api/messages/${authState.user._id}/${user._id}`
+            `http://172.30.18.69:8000/api/messages/${authState.user._id}/${user._id}`
           );
           fetchedMessages.push(...response.data.messages);
         }
@@ -65,51 +41,111 @@ const UserList = ({ navigation }) => {
       } catch (error) {
         console.log(error);
       }
+      setIsLoading(false);
     };
-  
+
     if (users.length) {
       fetchMessages();
     }
   }, [users]);
-  
+
+  useEffect(() => {
+    const usersWithLatestMessages = users.map((user) => {
+      const latestMessage = findLatestMessage(user._id);
+      return { ...user, latestMessage };
+    });
+
+    const sorted = usersWithLatestMessages.sort((a, b) => {
+      if (!a.latestMessage && !b.latestMessage) {
+        return 0;
+      }
+      if (!a.latestMessage) {
+        return 1;
+      }
+      if (!b.latestMessage) {
+        return -1;
+      }
+      return new Date(b.latestMessage.timestamp) - new Date(a.latestMessage.timestamp);
+    });
+
+    setSortedUsers(sorted);
+  }, [users, messages]);
+
   const findLatestMessage = (userId) => {
     const latestMessage = messages
       .filter((message) => message.sender._id === userId || message.receiver._id === userId)
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
 
-    return latestMessage;
+    if (!latestMessage) {
+      return null;
+    }
+
+    const maxLength = 30;
+    let messageText = latestMessage.message;
+
+    if (messageText.length > maxLength) {
+      messageText = messageText.slice(0, maxLength) + "...";
+    }
+
+    if (latestMessage.sender._id === authState.user._id) {
+      messageText = "You: " + messageText;
+    }
+
+    return { ...latestMessage, message: messageText };
   };
 
   const handleUserPress = (userId) => {
     navigation.navigate('Chat', { userId });
   };
 
-  
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="darkmagenta" />
+      </View>
+    );
+  }
+
   return (
-    <KeyboardAwareScrollView >
-    <View style={styles.container}>
-      {sortedUsers.filter((user) => user._id !== authState.user._id)
-        .map((user) => {
-        const latestMessage = findLatestMessage(user._id);
-        return (
-          <TouchableOpacity key={user._id} onPress={() => handleUserPress(user._id)} style={styles.userCard}>
-            <Image
-              source={user.image?.url ? { uri: user.image.url } : require('../assets/friendsApplogo.jpg')}
-              style={styles.userImage}
-            />
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{user.name}</Text>
-              {latestMessage && (
-                <Text style={styles.latestMessage}>
-                  {latestMessage.sender._id === authState.user._id ? 'You: ' : ''}
-                  {latestMessage.message}
-                </Text>
-              )}
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
+    <KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <View style={styles.userCard}>
+          {sortedUsers
+            .filter((user) => user._id !== authState.user._id)
+            .map((user, index) => {
+              const latestMessage = findLatestMessage(user._id);
+              return (
+                <React.Fragment key={user._id}>
+                  {index > 0 && <View style={styles.userSeparator} />}
+                  <TouchableOpacity
+                    onPress={() => handleUserPress(user._id)}
+                    style={styles.userItem}
+                  >
+                    <Image
+                      source={
+                        user.image?.url
+                          ? { uri: user.image.url }
+                          : require("../assets/friendsApplogo.jpg")
+                      }
+                      style={styles.userImage}
+                    />
+                    <View style={styles.userInfo}>
+                      <Text style={styles.userName}>{user.name}</Text>
+                      {latestMessage && (
+                        <Text style={styles.latestMessage}>
+                          {latestMessage.sender._id === authState.user._id
+                            ? "You: "
+                            : ""}
+                          {latestMessage.message}
+                        </Text>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </React.Fragment>
+              );
+            })}
+        </View>
+      </View>
     </KeyboardAwareScrollView>
   );
 };
@@ -117,17 +153,24 @@ const UserList = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333',
+    backgroundColor: "#111",
     paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'darkmagenta',
+    backgroundColor: "#000000",
     borderRadius: 10,
-    marginVertical: 5,
     padding: 10,
+  },
+  userItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  userSeparator: {
+    height: 1,
+    backgroundColor: "#000000",
+    marginVertical: 5,
   },
   userImage: {
     width: 50,
@@ -136,20 +179,20 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   userInfo: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    flexDirection: "column",
+    justifyContent: "space-between",
     flex: 1,
   },
   userName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
-    alignSelf: 'flex-start',
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    alignSelf: "flex-start",
   },
   latestMessage: {
-    fontSize: 14,
-    color: '#ddd',
-    alignSelf: 'center',
+    fontSize: 12,
+    color: "#ddd",
+    alignSelf: "flex-start",
   },
 });
 
