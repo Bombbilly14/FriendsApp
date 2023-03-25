@@ -10,13 +10,12 @@ const UserList = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
   const [sortedUsers, setSortedUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [authState, _] = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://172.30.18.69:8000/api/users');
+        const response = await axios.get('http://192.168.239.4:8000/api/users');
         setUsers(response.data);
       } catch (error) {
         console.log(error);
@@ -33,7 +32,7 @@ const UserList = ({ navigation }) => {
       try {
         for (const user of users) {
           const response = await axios.get(
-            `http://172.30.18.69:8000/api/messages/${authState.user._id}/${user._id}`
+            `http://192.168.239.4:8000/api/messages/${authState.user._id}/${user._id}`
           );
           fetchedMessages.push(...response.data.messages);
         }
@@ -133,9 +132,6 @@ const UserList = ({ navigation }) => {
                       <Text style={styles.userName}>{user.name}</Text>
                       {latestMessage && (
                         <Text style={styles.latestMessage}>
-                          {latestMessage.sender._id === authState.user._id
-                            ? "You: "
-                            : ""}
                           {latestMessage.message}
                         </Text>
                       )}
