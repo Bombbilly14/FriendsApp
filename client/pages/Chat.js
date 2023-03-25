@@ -16,7 +16,7 @@ const Chat = ({ route }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://172.30.18.69:8000/api/${userId}`);
+        const response = await axios.get(`http://192.168.239.4:8000/api/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.log(error);
@@ -29,7 +29,7 @@ const Chat = ({ route }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://172.30.18.69:8000/api/messages/${authState.user._id}/${userId}`);
+        const response = await axios.get(`http:/192.168.239.4:8000/api/messages/${authState.user._id}/${userId}`);
         setMessages(response.data.messages);
       } catch (error) {
         console.log(error);
@@ -40,7 +40,7 @@ const Chat = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    const newSocket = io('http://172.30.18.69:8000/');
+    const newSocket = io('http://192.168.239.4:8000/');
     setSocket(newSocket);
 
     newSocket.emit('join chat', { userId: authState.user._id });
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#8B008B',
+    backgroundColor: '#f5f5f5',
     padding: 15,
   },
   avatar: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000000',
   },
   messageList: {
     flex: 1,

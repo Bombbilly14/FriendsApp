@@ -6,8 +6,7 @@ import Home from '../../pages/Home'
 import { AuthContext } from '../../context/auth';
 import HeaderTabs from './HeaderTabs'
 import Account from '../../pages/Account'
-import Post from '../../pages/Post'
-import Links from '../../pages/Links'
+import ProfileList from '../../pages/ProfileList'
 import ForgotPassword from '../../pages/ForgotPassword'
 import Chat from '../../pages/Chat'
 import UserList from '../../pages/UserList'
@@ -24,8 +23,7 @@ const NavigationScreen = () => {
                 <>
                     <Stack.Screen name='Home' component={Home} />
                     <Stack.Screen name='Account' component={Account}  options={{ headerRight: () => <HeaderTabs /> }}/>
-                    <Stack.Screen name='Post' component={Post} />
-                    <Stack.Screen name='Links' component={Links} />
+                    <Stack.Screen name='ProfileList' component={ProfileList} />
                     <Stack.Screen name="UserList" component={UserList} />
                     <Stack.Screen name="Chat" component={Chat} />
                 </>
