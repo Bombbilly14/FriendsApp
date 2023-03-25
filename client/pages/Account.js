@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthContext } from '../context/auth'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import * as ImagePicker from 'react-native-image-picker';
+import Config from 'react-native-config';
 
 const Account = () => {
   const [name, setName] = useState("")
@@ -37,7 +38,7 @@ const Account = () => {
       let storedData = await AsyncStorage.getItem("auth-rn")
       const user = JSON.parse(storedData)
       console.log(user)
-      const response = await axios.post("http://172.28.165.55:8000/api/update-password", { password, newPassword, user })
+      const response = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/update-password`, { password, newPassword, user })
       const data = response.data
       if (data.error) {
         setErrorMessage(data.error);
@@ -81,7 +82,7 @@ const Account = () => {
 
     let storedData = await AsyncStorage.getItem("auth-rn")
     const parsed = JSON.parse(storedData)
-    const { data } = await axios.post("http://192.168.57.246:8000/api/upload-image", {
+    const { data } = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/upload-image`, {
       image: base64Image,
       user: parsed.user
     })

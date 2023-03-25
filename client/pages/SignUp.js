@@ -4,6 +4,8 @@ import axios from 'axios';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../context/auth'
+import Config from 'react-native-config';
+
 
 const SignUp = ({ navigation }) => {
 
@@ -19,7 +21,7 @@ const SignUp = ({ navigation }) => {
       alert("All fields are required")
       return;
     }
-    const resp = await axios.post('http://172.30.18.69:8000/api/signup', { name, email, password })
+    const resp = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/signup`, { name, email, password })
     if (resp.data.error) {
       alert(resp.data.error)
     } else {

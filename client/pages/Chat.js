@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Platform, S
 import { io } from 'socket.io-client';
 import axios from 'axios';
 import { AuthContext } from '../context/auth';
+import Config from 'react-native-config';
+
 
 const Chat = ({ route }) => {
   const [messages, setMessages] = useState([]);
@@ -16,7 +18,7 @@ const Chat = ({ route }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://192.168.239.4:8000/api/${userId}`);
+        const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.log(error);
@@ -29,7 +31,7 @@ const Chat = ({ route }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http:/192.168.239.4:8000/api/messages/${authState.user._id}/${userId}`);
+        const response = await axios.get(`http:/${Config.IP_ADDRESS}:8000/api/messages/${authState.user._id}/${userId}`);
         setMessages(response.data.messages);
       } catch (error) {
         console.log(error);
@@ -40,7 +42,7 @@ const Chat = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    const newSocket = io('http://192.168.239.4:8000/');
+    const newSocket = io(`http://${Config.IP_ADDRESS}:8000/`);
     setSocket(newSocket);
 
     newSocket.emit('join chat', { userId: authState.user._id });

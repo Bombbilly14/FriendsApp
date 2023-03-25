@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import axios from 'axios'
 import React, {useState} from 'react'
+import Config from 'react-native-config';
 
 const ForgotPassword = ({navigation}) => {
     const [email, setEmail] = useState("")
@@ -15,7 +16,7 @@ const ForgotPassword = ({navigation}) => {
             return
         }
         try {
-            const { data} = await axios.post("http://172.30.18.69:8000/api/forgot-password", {email})
+            const { data} = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/forgot-password`, {email})
             if(data.error) alert(data.error)
             else {
                 setVisible(true)
@@ -29,7 +30,7 @@ const ForgotPassword = ({navigation}) => {
 
     const handlePasswordReset = async () => {
         try {
-            const { data  } = await axios.post('http://172.30.18.69:8000/api/reset-password', { email, resetCode, password})
+            const { data  } = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/reset-password`, { email, resetCode, password})
             if (data.error) alert(data.error)
             else {
                 alert('Password reset successful')
