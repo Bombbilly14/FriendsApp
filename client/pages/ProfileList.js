@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../context/auth'
+import Config from 'react-native-config';
+
 
 const ProfileList = () => {
   const [users, setUsers] = useState([]);
@@ -10,7 +12,7 @@ const ProfileList = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get('http://192.168.239.4:8000/api/users');
+      const res = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/users`);
       setUsers(res.data.filter((user) => user._id !== authState.user._id));
       setFilteredUsers(res.data.filter((user) => user._id !== authState.user._id));
     };
@@ -23,7 +25,7 @@ const ProfileList = () => {
     console.log(user);
     try {
       await axios.post(
-        `http://192.168.239.4:8000/api/friend-request/${userId}`,
+        `http://${Config.IP_ADDRESS}:8000/api/friend-request/${userId}`,
         {},
         {
           headers: {

@@ -3,6 +3,8 @@ import React, { useState, useContext, useEffect } from 'react'
 import FooterList from '../components/footer/FooterList'
 import { AuthContext } from '../context/auth';
 import axios from 'axios';
+import Config from 'react-native-config';
+
 
 const Home = () => {
   const [requests, setRequests] = useState([]);
@@ -10,7 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const res = await axios.get(`http://192.168.239.4:8000/api/friend-requests`);
+      const res = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/friend-requests`);
       console.log('Response data:', res.data);
       setRequests(res.data.friendRequests);
       console.log(requests)
@@ -23,7 +25,7 @@ const Home = () => {
     console.log(requestId)
     try {
       await axios.put(
-        `http://192.168.239.4:8000/api/friend-request/${requestId}/accept`,
+        `http://${Config.IP_ADDRESS}:8000/api/friend-request/${requestId}/accept`,
         {},
         {
           headers: {

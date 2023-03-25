@@ -4,6 +4,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../context/auth'
+import Config from 'react-native-config';
+
 
 const SignIn = ({ navigation }) => {
 
@@ -11,11 +13,13 @@ const SignIn = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [state, setState] = useContext(AuthContext)
     const handleSubmit = async () => {
+
+        console.log(Config)
         if (email === '' || password === '') {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("http://192.168.239.4:8000/api/signin", { email, password });
+        const resp = await axios.post(`http://${Config.IP_ADDRESS}:8000/api/signin`, { email, password });
         if (resp.data.error) {
             alert('Name and password do not match');
         } else {

@@ -1,6 +1,5 @@
 import User from "../models/user.js";
 import { hashPassword, comparePassword } from "../helpers/auth.js";
-import { authenticate } from '../middlewares/authMiddleware.js';
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
 import cloudinary from 'cloudinary'

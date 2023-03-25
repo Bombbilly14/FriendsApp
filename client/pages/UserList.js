@@ -4,6 +4,8 @@ import axios from 'axios';
 import { AuthContext } from '../context/auth';
 import '../assets/friendsApplogo.jpg';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Config from 'react-native-config';
+
 
 const UserList = ({ navigation }) => {
   const [users, setUsers] = useState([]);
@@ -15,7 +17,7 @@ const UserList = ({ navigation }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://192.168.239.4:8000/api/users');
+        const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/users`);
         setUsers(response.data);
       } catch (error) {
         console.log(error);
@@ -32,7 +34,7 @@ const UserList = ({ navigation }) => {
       try {
         for (const user of users) {
           const response = await axios.get(
-            `http://192.168.239.4:8000/api/messages/${authState.user._id}/${user._id}`
+            `http://${Config.IP_ADDRESS}:8000/api/messages/${authState.user._id}/${user._id}`
           );
           fetchedMessages.push(...response.data.messages);
         }
