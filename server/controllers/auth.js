@@ -266,14 +266,24 @@ export const updatePassword = async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
       }
   
-      if (user.friendRequests.includes(friendId)) {
+      const friend = await User.findById(friendId);
+      if (!friend) {
+        console.log("Friend not found");
+        return res.status(404).json({ message: 'Friend not found' });
+      }
+  
+      if (user.sentRequests.some(id => id.toString() === friendId)) {
         console.log("Friend request already sent");
         return res.status(400).json({ message: 'Friend request already sent' });
       }
   
-      user.friendRequests.push(friendId);
+      user.sentRequests.push(friendId);
       await user.save();
-      console.log("Friend request saved");
+      console.log("Friend request saved in sender");
+  
+      friend.friendRequests.push(req.user._id);
+      await friend.save();
+      console.log("Friend request saved in recipient");
   
       res.json({ message: 'Friend request sent' });
     } catch (err) {
@@ -283,30 +293,33 @@ export const updatePassword = async (req, res) => {
   };
   
   
+  
 
-export const acceptRequest = async (req, res) => {
+  export const acceptRequest = async (req, res) => {
     const friendId = req.params.id;
-    
+  
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.user._id);
   
       if (!user) {
-        return res.status(404).json({ message: `User with ID ${req.user.id} not found` });
+        return res.status(404).json({ message: `User with ID ${req.user._id} not found` });
       }
   
-      if (!user.friendRequests.includes(friendId)) {
+      if (!user.friendRequests.some(id => id.toString() === friendId)) {
         return res.status(400).json({ message: 'Friend request not found' });
       }
-  
-      user.friendRequests = user.friendRequests.filter((id) => id !== friendId);
-      user.friends.push(friendId);
-      await user.save();
   
       const friend = await User.findById(friendId);
       if (!friend) {
         return res.status(404).json({ message: `Friend with ID ${friendId} not found` });
       }
-      friend.friends.push(req.user.id);
+  
+      user.friendRequests = user.friendRequests.filter((id) => id.toString() !== friendId);
+      user.friends.push(friendId);
+      await user.save();
+  
+      friend.sentRequests = friend.sentRequests.filter((id) => id.toString() !== req.user._id);
+      friend.friends.push(req.user._id);
       await friend.save();
   
       res.json({ message: 'Friend request accepted' });
@@ -314,7 +327,8 @@ export const acceptRequest = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
-}
+  }
+  
 
 export const getFriendRequests = async (req, res) => {
   try {

@@ -27,6 +27,12 @@ const userSchema = new Schema(
             type: String,
             default: "Subscriber",
         },
+        sentRequests: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+          },
+        ],
         friendRequests: [
           {
             type: Schema.Types.ObjectId,
