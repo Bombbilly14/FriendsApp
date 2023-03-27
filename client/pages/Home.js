@@ -9,6 +9,7 @@ import Config from 'react-native-config';
 const Home = () => {
   const [requests, setRequests] = useState([]);
   const [authState, setAuthState] = useContext(AuthContext);
+  const [friends, setFriends] = useState([]);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -20,6 +21,37 @@ const Home = () => {
 
     fetchRequests();
   }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/friends`, {
+          headers: {
+            'Authorization': `Bearer ${authState.token}`
+          }
+        });
+        setFriends(response.data.friends);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const deleteFriendRequest = async (requestId) => {
+    try {
+      const response = await axios.delete(`http://${Config.IP_ADDRESS}:8000/api/friends/requests/${requestId}`, {
+        headers: {
+          'Authorization': `Bearer ${authState.token}`
+        }
+      });
+      setRequests(prevRequests => prevRequests.filter((request) => request._id !== requestId));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
 
   const acceptRequest = async (requestId) => {
     console.log(requestId)
@@ -51,6 +83,8 @@ const Home = () => {
         padding: 16,
         margin: 10,
         shadowColor: '#000',
+        height: 125,
+        marginTop: 100,
         shadowOffset: {
           width: 0,
           height: 2,
@@ -64,49 +98,82 @@ const Home = () => {
       <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 8 }}>
         {item.name} wants to be friends
       </Text>
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#007AFF',
-          borderRadius: 10,
-          padding: 8,
-        }}
-        onPress={() => acceptRequest(item._id)}
-      >
-        <Text style={{ color: '#fff' }}>Accept</Text>
-      </TouchableOpacity>
+      <Text style={{ marginBottom: 10 }}>{item.email}</Text>
+  
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: 'darkmagenta',
+            borderRadius: 10,
+            padding: 8,
+            marginRight: 4,
+            width: 100
+          }}
+          onPress={() => acceptRequest(item._id)}
+        >
+          <Text style={{ color: '#fff' }}>Accept</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: 'red',
+            borderRadius: 10,
+            paddingVertical: 8,
+            paddingHorizontal: 4,
+          }}
+          onPress={() => deleteFriendRequest(item._id)}
+        >
+          <Text style={{ color: '#fff' }}>Decline</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
-
-  if (requests.length === 0) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>No requests at this time</Text>
-        </View>
-        <FooterList />
-      </SafeAreaView>
-    );
-  }
+  
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1 }}>
-        <FlatList
-        horizontal
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-        />
+      <View style={styles.topSection}>
+        <Text style={styles.welcomeMessage}>
+          Welcome to Friends! Send or accept requests to start messaging
+          Friends!
+        </Text>
+      </View>
+      <View style={styles.bottomSection}>
+        {requests.length === 0 ? (
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Text>No requests at this time</Text>
+          </View>
+        ) : (
+          <FlatList
+            horizontal
+            data={requests}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+          />
+        )}
       </View>
       <FooterList />
     </SafeAreaView>
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'space-between' }
-})
+  container: { flex: 1, justifyContent: 'space-between' },
+  topSection: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  welcomeMessage: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    color: 'blue',
+  },
+  bottomSection: {
+    flex: 2,
+  },
+});
 
-export default Home
+export default Home;

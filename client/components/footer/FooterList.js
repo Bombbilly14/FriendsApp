@@ -11,7 +11,7 @@ const FooterList = () => {
       <View style={styles.container}>
         <FooterItem text="Home" name="home" screenName={"Home"} handlePress={() => navigation.navigate("Home")} routeName={route.name}/>
         <FooterItem text="Profile List" name="plus-square" screenName={"ProfileList"} handlePress={() => navigation.navigate("ProfileList")} routeName={route.name}/>
-        <FooterItem text="Message" name="list-ol" screenName={"UserList"} handlePress={() => navigation.navigate("UserList")} routeName={route.name}/>
+        <FooterItem text="Message" name="list-ol" screenName={"Friends"} handlePress={() => navigation.navigate("Friends")} routeName={route.name}/>
         <FooterItem text="Account" name="user" screenName={"Account"} handlePress={() => navigation.navigate("Account")} routeName={route.name}/>
       </View>
     )
