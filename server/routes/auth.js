@@ -4,7 +4,7 @@ const router = express.Router();
 
 //controllers
 
-import { signup, signin, forgotPassword, resetPassword, getAllUsers, uploadImage, updatePassword, getUserById, sendRequest, acceptRequest, getFriendRequests } from '../controllers/auth.js';
+import { signup, signin, forgotPassword, resetPassword, getAllUsers, uploadImage, updatePassword, getUserById, sendRequest, acceptRequest, getFriendRequests, getAllFriends, deleteFriendRequest } from '../controllers/auth.js';
 import { sendPrivateMessage, getPrivateMessage } from '../controllers/message.js'
 
 
@@ -26,6 +26,8 @@ router.get('/messages/:userId1/:userId2', getPrivateMessage)
 router.post('/friend-request/:id', authenticate, sendRequest)
 router.get('/friend-requests', authenticate, getFriendRequests);
 router.put('/friend-request/:id/accept', authenticate, acceptRequest)
+router.get('/friends', authenticate, getAllFriends)
 router.get('/:userId', getUserById);
+router.delete('/friends/requests/:requestId', authenticate, deleteFriendRequest);
 
 export default router

@@ -17,8 +17,12 @@ const UserList = ({ navigation }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/users`);
-        setUsers(response.data);
+        const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/friends`, {
+          headers: {
+            'Authorization': `Bearer ${authState.token}`
+          }
+        });
+        setUsers(response.data.friends);
       } catch (error) {
         console.log(error);
       }
@@ -143,6 +147,7 @@ const UserList = ({ navigation }) => {
               );
             })}
         </View>
+        <Text style= {{ justifyContent: 'center', alignSelf: 'center', marginTop: 100, fontStyle: 'italic'}}> Add more friends to start messaging!</Text>
       </View>
     </KeyboardAwareScrollView>
   );
@@ -151,9 +156,10 @@ const UserList = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111",
+    backgroundColor: "darkmagenta",
     paddingHorizontal: 10,
     paddingVertical: 5,
+    minHeight: 500
   },
   userCard: {
     backgroundColor: "#000000",

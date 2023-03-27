@@ -276,6 +276,11 @@ export const updatePassword = async (req, res) => {
         console.log("Friend request already sent");
         return res.status(400).json({ message: 'Friend request already sent' });
       }
+
+      if (user.friends.some(id => id.toString() === friendId)) {
+        console.log("Users are already friends");
+        return res.status(400).json({ message: 'Users are already friends' });
+      }
   
       user.sentRequests.push(friendId);
       await user.save();
@@ -332,13 +337,53 @@ export const updatePassword = async (req, res) => {
 
 export const getFriendRequests = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate('friendRequests', 'name email');
+    const user = await User.findById(req.user._id).populate('friendRequests', 'name email image');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     res.json({ friendRequests: user.friendRequests });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getAllFriends = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('friends', 'name email image');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ friends: user.friends });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const deleteFriendRequest = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requestId = req.params.requestId;
+    const requestIndex = user.friendRequests.findIndex((request) => request._id.toString() === requestId);
+
+    if (requestIndex === -1) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    user.friendRequests.splice(requestIndex, 1);
+    await user.save();
+
+    res.status(200).json({ message: 'Friend request deleted', friendRequests: user.friendRequests });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

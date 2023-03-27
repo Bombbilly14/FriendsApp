@@ -24,7 +24,7 @@ const NavigationScreen = () => {
                     <Stack.Screen name='Home' component={Home} />
                     <Stack.Screen name='Account' component={Account}  options={{ headerRight: () => <HeaderTabs /> }}/>
                     <Stack.Screen name='ProfileList' component={ProfileList} />
-                    <Stack.Screen name="UserList" component={UserList} />
+                    <Stack.Screen name="Friends" component={UserList} />
                     <Stack.Screen name="Chat" component={Chat} />
                 </>
                 : (

@@ -129,7 +129,7 @@ const Account = () => {
         }
         <Text style={styles.signupText}> {name} </Text>
         <Text style={styles.emailText}>{email}</Text>
-        <Text style={styles.roleText}>{role}</Text>
+        
         <TouchableOpacity onPress={handleOpenModal} style={styles.buttonStyle}>
           <Text style={styles.buttonText}> Update Password</Text>
         </TouchableOpacity>

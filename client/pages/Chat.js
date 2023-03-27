@@ -6,7 +6,7 @@ import { AuthContext } from '../context/auth';
 import Config from 'react-native-config';
 
 
-const Chat = ({ route }) => {
+const Chat = ({ route, navigation }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
@@ -20,13 +20,27 @@ const Chat = ({ route }) => {
       try {
         const response = await axios.get(`http://${Config.IP_ADDRESS}:8000/api/${userId}`);
         setUser(response.data);
+        navigation.setOptions({
+          headerTitle: response.data.name,
+          headerRight: () => (
+            <Image
+              source={
+                response.data.image?.url
+                  ? { uri: response.data.image.url }
+                  : require('../assets/friendsApplogo.jpg')
+              }
+              style={styles.avatar}
+            />
+          ),
+        });
       } catch (error) {
         console.log(error);
       }
     };
-
+  
     fetchUser();
   }, []);
+  
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -103,17 +117,7 @@ const Chat = ({ route }) => {
       style={styles.container}
       keyboardVerticalOffset='true'
     >
-      <View style={styles.header}>
-        <Image
-          source={
-            user.image?.url
-              ? { uri: user.image.url }
-              : require('../assets/friendsApplogo.jpg')
-          }
-          style={styles.avatar}
-        />
-        <Text style={styles.headerTitle}>{user.name}</Text>
-        </View>
+      
       <ScrollView
         ref={scrollViewRef}
         onContentSizeChange={scrollToBottom}
@@ -121,30 +125,39 @@ const Chat = ({ route }) => {
         contentContainerStyle={styles.messageListContent}
       >
         {messages.map((msg) => (
-          <View
-            key={msg._id}
-            style={[
-              styles.messageContainer,
-              msg.sender._id === authState.user._id
-                ? styles.sentMessage
-                : styles.receivedMessage,
-            ]}
-          >
-            {msg.sender._id !== authState.user._id && (
-              <Image
-                source={
-                  user.image?.url
-                    ? { uri: user.image.url }
-                    : require('../assets/friendsApplogo.jpg')
-                }
-                style={styles.messageAvatar}
-              />
-            )}
-            <View style={styles.messageBubble}>
-              <Text style={styles.messageText}>{msg.message}</Text>
-            </View>
-          </View>
-        ))}
+  <View
+    key={msg._id}
+    style={[
+      styles.messageContainer,
+      msg.sender._id === authState.user._id
+        ? styles.sentMessage
+        : styles.receivedMessage,
+    ]}
+  >
+    {msg.sender._id !== authState.user._id && (
+      <Image
+        source={
+          user.image?.url
+            ? { uri: user.image.url }
+            : require('../assets/friendsApplogo.jpg')
+        }
+        style={styles.messageAvatar}
+      />
+    )}
+    <View
+      style={[
+        styles.messageBubble,
+        {
+          backgroundColor:
+            msg.sender._id === authState.user._id ? '#0000ff' : 'darkmagenta',
+        },
+      ]}
+    >
+      <Text style={styles.messageText}>{msg.message}</Text>
+    </View>
+  </View>
+))}
+
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
@@ -208,9 +221,9 @@ const styles = StyleSheet.create({
   },
   messageBubble: {
     maxWidth: '70%',
+    minWidth: 60,
     padding: 10,
     borderRadius: 20,
-    backgroundColor: '#8B008B',
   },
   messageText: {
     fontSize: 14,
@@ -233,7 +246,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#8B008B',
+    backgroundColor: 'blue',
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 20,
