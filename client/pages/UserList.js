@@ -106,7 +106,7 @@ const UserList = ({ navigation }) => {
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="darkmagenta" />
+        <ActivityIndicator size="large" color="black" />
       </View>
     );
   }
