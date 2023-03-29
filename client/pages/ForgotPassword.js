@@ -20,7 +20,7 @@ const ForgotPassword = ({navigation}) => {
             if(data.error) alert(data.error)
             else {
                 setVisible(true)
-                alert('please enter the passcode sent to you email')
+                alert('please enter the passcode sent to your email')
             }
 
         } catch(err) {
@@ -63,7 +63,7 @@ const ForgotPassword = ({navigation}) => {
             <TouchableOpacity onPress={visible ? handlePasswordReset : handleSubmit} style={styles.buttonStyle}>
                 <Text style={styles.buttonText}>{visible ? "Reset Password" : "Request Reset Code"}</Text>
             </TouchableOpacity>
-            <Text onPress={() => navigation.navigate("SignIn")} style={styles.forgotText} >
+            <Text onPress={() => navigation.navigate("Sign In")} style={styles.forgotText} >
                 Sign In
             </Text>
         </View>

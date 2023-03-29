@@ -34,10 +34,13 @@ io.on('connection', (socket) => {
 
 
   socket.on('send message', async ({ senderId, receiverId, message }) => {
-
     const newMessage = await saveMessage(senderId, receiverId, message);
-    io.to(receiverId).emit('new message', newMessage);
+  
+    socket.to(receiverId).emit('new message', newMessage);
+
+    
   });
+  
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);

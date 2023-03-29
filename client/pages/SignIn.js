@@ -49,11 +49,11 @@ const SignIn = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={{ fontSize: 12, textAlign: 'center' }}>
                     Not yet registered? {" "}
-                    <Text style={{ color: 'darkred', fontWeight: 'bold' }} onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={{ color: 'darkred', fontWeight: 'bold' }} onPress={() => navigation.navigate('Sign Up')}>
                         Sign Up!
                     </Text>
                 </Text>
-                <Text  onPress={()=> navigation.navigate('forgot-password')} style={{ fontSize: 12, textAlign: 'center', marginTop: 10, color: 'purple', fontWeight: 'bold' }}>Forgot Password?</Text>
+                <Text  onPress={()=> navigation.navigate('Forgot password?')} style={{ fontSize: 12, textAlign: 'center', marginTop: 10, color: 'purple', fontWeight: 'bold' }}>Forgot Password?</Text>
             </View>
         </KeyboardAwareScrollView>
     )

@@ -41,7 +41,7 @@ const SignUp = ({ navigation }) => {
   return (
     <KeyboardAwareScrollView >
       <View styles={styles.container}>
-        <Text style={styles.signupText}>SignUp</Text>
+        <Text style={styles.signupText}>Sign Up</Text>
         <View style={{ marginHorizontal: 24 }}>
           <Text style={{ fontSize: 16, color: 'blue' }}>NAME</Text>
           <TextInput style={styles.signupInput} value={name} onChangeText={text => setName(text)} />
@@ -59,7 +59,7 @@ const SignUp = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={{ fontSize: 12, textAlign: 'center' }}>
           Already a member? {' '}
-          <Text style={{ color: 'darkred', fontWeight: 'bold' }} onPress={() => navigation.navigate('SignIn')}>
+          <Text style={{ color: 'darkred', fontWeight: 'bold' }} onPress={() => navigation.navigate('Sign In')}>
             Sign In
           </Text>
         </Text>

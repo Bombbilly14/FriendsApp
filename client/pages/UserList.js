@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: "darkmagenta",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    minHeight: 500
+    minHeight: 700
   },
   userCard: {
     backgroundColor: "#000000",
