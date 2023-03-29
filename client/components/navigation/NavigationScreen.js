@@ -18,7 +18,7 @@ const NavigationScreen = () => {
     const authenticated = state && state.token !== null && state.user !== null;
 
     return (
-        <Stack.Navigator initialRouteName='SignIn'>
+        <Stack.Navigator initialRouteName='Sign In'>
             {authenticated ?
                 <>
                     <Stack.Screen name='Home' component={Home} />
@@ -29,9 +29,9 @@ const NavigationScreen = () => {
                 </>
                 : (
                     <>
-                        <Stack.Screen name='SignUp' component={SignUp} />
-                        <Stack.Screen name='SignIn' component={SignIn} />
-                        <Stack.Screen name='forgot-password' component={ForgotPassword} />
+                        <Stack.Screen name='Sign Up' component={SignUp} />
+                        <Stack.Screen name='Sign In' component={SignIn} />
+                        <Stack.Screen name='Forgot password?' component={ForgotPassword} />
 
                     </>
                 )

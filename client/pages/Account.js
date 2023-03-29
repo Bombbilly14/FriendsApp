@@ -92,8 +92,9 @@ const Account = () => {
     stored.user = data;
     await AsyncStorage.setItem("auth-rn", JSON.stringify(stored))
 
-    //updated context
-    setState({ ...state, user: data })
+   
+    setState((prevState) => ({ ...prevState, user: data }));
+
     setImage(data.image)
     alert("profile image saved")
   }
